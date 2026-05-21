@@ -403,7 +403,7 @@
         // Reemplazo de leads Firebase por SheetDB en tiempo real
         async function fetchSheetDBLeads() {
             try {
-                const response = await fetch('https://sheetdb.io/api/v1/fzlg2bon1z65d');
+              const response = await fetch('https://sheetdb.io/api/v1/knv72rpe7i4ex');
                 const data = await response.json();
                 if(Array.isArray(data)) {
                     const sheetLeads = data.map(d => {
@@ -536,7 +536,7 @@
             
             if(id.startsWith('SheetDB_')) {
                 const ts = id.split('_')[1];
-                await fetch(`https://sheetdb.io/api/v1/fzlg2bon1z65d/timestamp/${ts}`, { method: 'DELETE' });
+            fetch(`https://sheetdb.io/api/v1/knv72rpe7i4ex/timestamp/${ts}`, { method: 'DELETE' });
                 fetchSheetDBLeads();
             } else {
                 await deleteDoc(doc(db, 'leads', id));
