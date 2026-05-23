@@ -61,7 +61,21 @@
 
     <main class="flex-1 overflow-y-auto relative bg-[#0a0f1c] pb-12">
         
-        <!-- INITIALIZATION BANNER REMOVED FOR PRODUCTION -->
+        <!-- BANNER DE INICIALIZACION PARA FIREBASE -->
+        <div id="firebase-init-banner" class="bg-blue-950/80 border border-blue-500/30 text-white p-6 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl hidden">
+            <div>
+                <h3 class="font-extrabold text-xl flex items-center gap-2 text-blue-400">
+                    <i data-feather="cloud-lightning" class="text-amber-400"></i> Inicializar Base de Datos en la Nube (Firebase)
+                </h3>
+                <p class="text-xs text-slate-300 mt-2">
+                    Detectamos que tu base de datos de Firebase no tiene clientes activos. Carga los 24 clientes y prospectos preconfigurados de Amcor para activar el CRM y simular los datos académicos.
+                </p>
+            </div>
+            <button id="btn-seed-firebase" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                <i data-feather="upload-cloud"></i> Cargar 24 Clientes ☁️
+            </button>
+        </div>
+
         <!-- 1. HOME (INICIO) -->
         <section id="home" class="section-view active max-w-7xl mx-auto">
             <div class="flex items-center gap-4 mb-10">
@@ -533,7 +547,15 @@
 
             window.appState.clients = clients;
             
-            // Modos de inicialización eliminados para producción.
+            // Toggle initialization banner
+            const initBanner = document.getElementById('firebase-init-banner');
+            if (initBanner) {
+                if (clients.length === 0) {
+                    initBanner.classList.remove('hidden');
+                } else {
+                    initBanner.classList.add('hidden');
+                }
+            }
 
             renderHome();
             renderRFM();
@@ -1387,6 +1409,60 @@
                 statusDiv.style.color = "#f87171";
             }
         };
+
+        // Firebase Database Seeder
+        const btnSeed = document.getElementById('btn-seed-firebase');
+        if (btnSeed) {
+            btnSeed.addEventListener('click', async () => {
+                btnSeed.disabled = true;
+                btnSeed.innerHTML = '<i class="animate-spin mr-2" data-feather="loader"></i> Cargando...';
+                feather.replace();
+                
+                try {
+                    const today = new Date();
+                    const subDays = (d, days) => new Date(d.getTime() - days*24*60*60*1000).toISOString();
+                    
+                    const seedClients = [
+                      { id: 'C1', name: 'UNILEVER ANDINA COLOMBIA LTDA.', totalVolume: 636745, ordersCount: 235, lastOrderDate: subDays(today, 5), tier: '💎 DIAMANTE', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO860002518-2', sectors: ['💆 CUIDADO PERSONAL', '🧹 LIMPIEZA DEL HOGAR', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados Doypack', 'Rollos Flexibles', 'Sachets'], avgOrderKg: 2700, deliveryCompliance: 98, trend: 'UP', nextAction: 'Revisión trimestral contrato', nextActionDate: subDays(today, -10), nextActionResponsible: 'Ana G.' },
+                      { id: 'C2', name: 'QUALA S.A.', totalVolume: 234369, ordersCount: 130, lastOrderDate: subDays(today, 12), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860074450-9', sectors: ['🥫 ALIMENTOS Y BEBIDAS', '💆 CUIDADO PERSONAL'], topProducts: ['Rollos Bebidas', 'Sachets Sopa', 'Pouches'], avgOrderKg: 1800, deliveryCompliance: 95, trend: 'UP', nextAction: 'Llamada seguimiento nuevo producto', nextActionDate: subDays(today, -2), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C3', name: 'ALIMENTOS CONCENTRADOS RAZA LTDA', totalVolume: 154809, ordersCount: 11, lastOrderDate: subDays(today, 25), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860019205-7', sectors: ['🐾 MASCOTAS'], topProducts: ['Sacos 15kg', 'Bolsas 5kg', 'Laminados Pet'], avgOrderKg: 14000, deliveryCompliance: 100, trend: 'STABLE', nextAction: 'Agendar visita planta', nextActionDate: subDays(today, -5), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C4', name: 'NESTLE DE COLOMBIA S.A', totalVolume: 104455, ordersCount: 36, lastOrderDate: subDays(today, 8), tier: '💎 DIAMANTE', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO860002130-9', sectors: ['🥫 ALIMENTOS Y BEBIDAS', '☕ CAFÉ Y BEBIDAS CALIENTES'], topProducts: ['Empaque Galletas', 'Laminados Lácteos', 'Pouches Café'], avgOrderKg: 2900, deliveryCompliance: 97, trend: 'UP', nextAction: 'Enviar muestras', nextActionDate: subDays(today, -1), nextActionResponsible: 'Ana G.' },
+                      { id: 'C5', name: 'COLOMBINA S.A.', totalVolume: 69124, ordersCount: 90, lastOrderDate: subDays(today, 15), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO890301884-5', sectors: ['🧂 CONDIMENTOS Y SALSAS', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Rollos Dulces', 'Bolsas Chupetas', 'Laminados'], avgOrderKg: 760, deliveryCompliance: 92, trend: 'STABLE', nextAction: 'Renovación de precios', nextActionDate: subDays(today, -14), nextActionResponsible: 'Luis F.' },
+                      { id: 'C6', name: 'LACTOPACK S.A.', totalVolume: 53084, ordersCount: 3, lastOrderDate: subDays(today, 75), tier: '💎 DIAMANTE', status: 'RETENCIÓN ⚠️', country: '🇨🇴', nit: 'CO800109874-2', sectors: ['🥛 LÁCTEOS'], topProducts: ['Bolsas UHT', 'Laminados', 'Rollos Leche'], avgOrderKg: 17600, deliveryCompliance: 88, trend: 'DOWN', nextAction: 'Llamada urgente de reactivación', nextActionDate: subDays(today, 1), nextActionResponsible: 'Director Comercial' },
+                      { id: 'C7', name: 'LEVAPAN S.A.', totalVolume: 52811, ordersCount: 10, lastOrderDate: subDays(today, 40), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860000261-6', sectors: ['🧂 CONDIMENTOS Y SALSAS', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Empaques Levadura', 'Sobres', 'Laminados'], avgOrderKg: 5200, deliveryCompliance: 99, trend: 'STABLE', nextAction: 'Cotización nuevo volumen', nextActionDate: subDays(today, -4), nextActionResponsible: 'Ana G.' },
+                      { id: 'C8', name: 'UL COSTA RICA SCC', totalVolume: 52658, ordersCount: 44, lastOrderDate: subDays(today, 20), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇷', nit: 'CR310167507629', sectors: ['🧹 LIMPIEZA DEL HOGAR', '🧂 CONDIMENTOS Y SALSAS'], topProducts: ['Doypack', 'Sachets', 'Rollos'], avgOrderKg: 1190, deliveryCompliance: 96, trend: 'UP', nextAction: 'Confirmar recepción pedido', nextActionDate: subDays(today, -7), nextActionResponsible: 'Luis F.' },
+                      { id: 'C9', name: 'PROCTER Y GAMBLE COLOMBIA LTDA.', totalVolume: 51232, ordersCount: 10, lastOrderDate: subDays(today, 95), tier: '💎 DIAMANTE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: 'CO800000946-4', sectors: ['🧹 LIMPIEZA DEL HOGAR', '📦 INDUSTRIAL / PACKAGING'], topProducts: ['Empaques Jabón', 'Rollos Detergente'], avgOrderKg: 5100, deliveryCompliance: 85, trend: 'DOWN', nextAction: 'Visita de recuperación', nextActionDate: subDays(today, -3), nextActionResponsible: 'Director Comercial' },
+                      { id: 'C10', name: 'UNIPHOS COLOMBIA PLANT LIMITED', totalVolume: 48000, ordersCount: 3, lastOrderDate: subDays(today, 10), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO900361697-6', sectors: ['📦 INDUSTRIAL / PACKAGING'], topProducts: ['Rollos Especiales', 'Sacos'], avgOrderKg: 16000, deliveryCompliance: 100, trend: 'UP', nextAction: 'Ninguna', nextActionDate: subDays(today, -30), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C11', name: 'ALIMENTOS POLAR COMERCIAL', totalVolume: 40000, ordersCount: 2, lastOrderDate: subDays(today, 50), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇻🇪', nit: 'VE000413126', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas Harina', 'Rollos'], avgOrderKg: 20000, deliveryCompliance: 90, trend: 'STABLE', nextAction: 'Consultar inventario actual', nextActionDate: subDays(today, -20), nextActionResponsible: 'Ana G.' },
+                      { id: 'C12', name: 'NUTRIMENTI DE COLOMBIA SAS', totalVolume: 38890, ordersCount: 15, lastOrderDate: subDays(today, 18), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO800090890-5', sectors: ['☕ CAFÉ Y BEBIDAS CALIENTES', '🧂 CONDIMENTOS Y SALSAS'], topProducts: ['Rollos', 'Pouches'], avgOrderKg: 2590, deliveryCompliance: 98, trend: 'UP', nextAction: 'Preparar contrato anual', nextActionDate: subDays(today, -15), nextActionResponsible: 'Luis F.' },
+                      { id: 'C13', name: 'MIZOOCO S.A.S.', totalVolume: 38000, ordersCount: 3, lastOrderDate: subDays(today, 80), tier: '🥇 ORO', status: 'RETENCIÓN ⚠️', country: '🇨🇴', nit: 'CO901633554-3', sectors: ['🐾 MASCOTAS'], topProducts: ['Laminados', 'Bolsas'], avgOrderKg: 12600, deliveryCompliance: 92, trend: 'DOWN', nextAction: 'Reunión de reactivación', nextActionDate: subDays(today, -1), nextActionResponsible: 'Ana G.' },
+                      { id: 'C14', name: 'C.I UPFIELD COLOMBIA S.A.S', totalVolume: 29454, ordersCount: 14, lastOrderDate: subDays(today, 4), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO901181764-2', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados', 'Tapas'], avgOrderKg: 2100, deliveryCompliance: 95, trend: 'UP', nextAction: 'Confirmar arte de impresión', nextActionDate: subDays(today, -2), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C15', name: 'PROQUALA S.A', totalVolume: 25900, ordersCount: 18, lastOrderDate: subDays(today, 30), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇩🇴', nit: 'DO13029493-3', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Sachets', 'Rollos'], avgOrderKg: 1430, deliveryCompliance: 89, trend: 'STABLE', nextAction: 'Llamada de rutina', nextActionDate: subDays(today, -8), nextActionResponsible: 'Ana G.' },
+                      { id: 'C16', name: 'RECKITT BENCKISER COLOMBIA S.A.', totalVolume: 21860, ordersCount: 27, lastOrderDate: subDays(today, 11), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO890300684-4', sectors: ['🧹 LIMPIEZA DEL HOGAR'], topProducts: ['Rollos Especiales', 'Doypack'], avgOrderKg: 809, deliveryCompliance: 99, trend: 'UP', nextAction: 'Validar calidad lote 4', nextActionDate: subDays(today, -1), nextActionResponsible: 'Luis F.' },
+                      { id: 'C17', name: 'NESTLE DOMINICANA S.A.', totalVolume: 20582, ordersCount: 7, lastOrderDate: subDays(today, 105), tier: '🥇 ORO', status: 'INACTIVO 🔴', country: '🇩🇴', nit: 'DO101829168', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Pouches', 'Sachets'], avgOrderKg: 2940, deliveryCompliance: 95, trend: 'DOWN', nextAction: 'Intentar recuperar con descuento', nextActionDate: subDays(today, 5), nextActionResponsible: 'Director Comercial' },
+                      { id: 'C18', name: 'SOLLA S.A', totalVolume: 19985, ordersCount: 4, lastOrderDate: subDays(today, 45), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: '-', sectors: ['🐾 MASCOTAS'], topProducts: ['Sacos', 'Rollos'], avgOrderKg: 4996, deliveryCompliance: 100, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C19', name: 'UNILEVER EL SALVADOR SCC', totalVolume: 18500, ordersCount: 7, lastOrderDate: subDays(today, 6), tier: '🥈 PLATA', status: 'ACTIVO EN PEDIDO', country: '🇸🇻', nit: '-', sectors: ['💆 CUIDADO PERSONAL'], topProducts: ['Sachets'], avgOrderKg: 2642, deliveryCompliance: 94, trend: 'STABLE', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C20', name: 'AZUL K S.A.S.', totalVolume: 18000, ordersCount: 6, lastOrderDate: subDays(today, 62), tier: '🥈 PLATA', status: 'RETENCIÓN ⚠️', country: '🇨🇴', nit: '-', sectors: ['💆 CUIDADO PERSONAL'], topProducts: ['Bolsas Jabón'], avgOrderKg: 3000, deliveryCompliance: 80, trend: 'DOWN', nextAction: 'Llamar a compras', nextActionDate: subDays(today, 2), nextActionResponsible: 'Ana G.' },
+                      { id: 'C21', name: 'MONDELEZ MEXICO S DE RL', totalVolume: 14100, ordersCount: 21, lastOrderDate: subDays(today, 2), tier: '🥈 PLATA', status: 'ACTIVO EN PEDIDO', country: '🇲🇽', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados', 'Tapas'], avgOrderKg: 671, deliveryCompliance: 99, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C22', name: 'COLGATE-PALMOLIVE COMPANIA', totalVolume: 10220, ordersCount: 11, lastOrderDate: subDays(today, 10), tier: '🥈 PLATA', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: '-', sectors: ['💆 CUIDADO PERSONAL', '🧹 LIMPIEZA DEL HOGAR'], topProducts: ['Laminados'], avgOrderKg: 900, deliveryCompliance: 99, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C33', name: 'FEDERAL S.A.S.', totalVolume: 4700, ordersCount: 5, lastOrderDate: subDays(today, 120), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas'], avgOrderKg: 940, deliveryCompliance: 90, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C34', name: 'LABORATORIOS BAXTER', totalVolume: 3500, ordersCount: 2, lastOrderDate: subDays(today, 15), tier: '🥉 BRONCE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: '-', sectors: ['💊 FARMACÉUTICA'], topProducts: ['Laminados Médicos'], avgOrderKg: 1750, deliveryCompliance: 100, trend: 'UP', nextAction: 'Solicitud de especificaciones', nextActionDate: subDays(today, -3), nextActionResponsible: 'Carlos M.' }
+                    ];
+                    
+                    for (const c of seedClients) {
+                        await setDoc(doc(db, 'clients', c.id), c);
+                    }
+                    alert('¡Base de datos inicializada en Firebase con éxito! 🚀');
+                    document.getElementById('firebase-init-banner').classList.add('hidden');
+                } catch(e) {
+                    console.error("Error seeding Firebase:", e);
+                    alert('Error al inicializar: ' + e.message);
+                    btnSeed.disabled = false;
+                    btnSeed.innerHTML = '<i data-feather="upload-cloud"></i> Cargar 24 Clientes ☁️';
+                    feather.replace();
+                }
+            });
+        }
 
         feather.replace();
     </script>
