@@ -564,42 +564,59 @@
             renderSectors();
         });
 
-        // Reemplazo de leads Firebase por SheetDB en tiempo real
+        const fallbackLeads = [
+          { id: 'FB_1', company: 'Prueba azul', name: 'Prueba azul', role: 'azul@uao.edu.co', estimatedVolume: 5250, score: 50, stage: '🆕 NUEVO', sector: 'Salud y Médico (Pharma)', interestType: 'Farmacia', countryCity: 'Colombia', origen: 'Landing Page' },
+          { id: 'FB_2', company: 'Masaki', name: 'Manu Sandoval', role: 'm.sandoval.q0123@gmail.com', estimatedVolume: 500000, score: 70, stage: '🆕 NUEVO', sector: 'Alimentos', interestType: 'Galletitas de Ron', countryCity: 'Colombia', origen: 'Landing Page' },
+          { id: 'FB_3', company: 'Test Auto', name: 'Robot', role: 'bot@test.com', estimatedVolume: 1000, score: 20, stage: '🆕 NUEVO', sector: 'Alimentos', interestType: 'Prueba', countryCity: 'Colombia', origen: 'Landing Page' },
+          { id: 'FB_4', company: 'Sistema Amcor Integrado', name: 'Bot de Prueba Final', role: 'bot@test.com', estimatedVolume: 99999, score: 80, stage: '🆕 NUEVO', sector: 'Industrial u Otros', interestType: 'Otro', countryCity: 'Colombia', origen: 'Landing Page' },
+          { id: 'FB_5', company: 'Lisos ZEA', name: 'Dani Herrera Zea', role: 'lisoszeasaludables@gmail.com', estimatedVolume: 25000, score: 60, stage: '🆕 NUEVO', sector: 'Cuidado Personal y del Hogar', interestType: 'Tratamientos capilares', countryCity: 'Colombia', origen: 'Landing Page' }
+        ];
+
+        // Reemplazo de leads Firebase por SheetDB en tiempo real con Fallback local
         async function fetchSheetDBLeads() {
+            let sheetLeads = [];
             try {
                 const response = await fetch('https://sheetdb.io/api/v1/knv72rpe7i4ex');
-                const data = await response.json();
-                if(Array.isArray(data)) {
-                    const sheetLeads = data.map(d => {
-                        const vol = parseInt(d.volumen) || 0;
-                        let score = 0;
-                        if(vol > 20000) score += 40; else if(vol > 5000) score += 20; else score += 10;
-                        if(d.para_cuando && d.para_cuando.toLowerCase().includes('ya')) score += 30;
-                        else score += 10;
-                        
-                        return {
-                            id: 'SheetDB_' + d.timestamp,
-                            company: d.nombre,
-                            name: d.contacto,
-                            role: d.email || 'Contacto Comercial',
-                            estimatedVolume: vol,
-                            score: score,
-                            stage: '🆕 NUEVO',
-                            sector: d.grupo,
-                            interestType: d.sector,
-                            countryCity: 'Colombia',
-                            origen: 'Landing Page'
-                        };
-                    }).filter(l => l.company && l.name);
-
-                    // Filtrar si ya es cliente
-                    const clientNames = window.appState.clients.map(c => c.name.toLowerCase());
-                    window.appState.leads = sheetLeads.filter(l => !clientNames.includes(l.company.toLowerCase())).sort((a,b)=> b.score - a.score);
-                    
-                    renderHome();
-                    renderLeads();
+                if (response.ok) {
+                    const data = await response.json();
+                    if(Array.isArray(data)) {
+                        sheetLeads = data.map(d => {
+                            const vol = parseInt(d.volumen) || 0;
+                            let score = 0;
+                            if(vol > 20000) score += 40; else if(vol > 5000) score += 20; else score += 10;
+                            if(d.para_cuando && d.para_cuando.toLowerCase().includes('ya')) score += 30;
+                            else score += 10;
+                            
+                            return {
+                                id: 'SheetDB_' + d.timestamp,
+                                company: d.nombre,
+                                name: d.contacto,
+                                role: d.email || 'Contacto Comercial',
+                                estimatedVolume: vol,
+                                score: score,
+                                stage: '🆕 NUEVO',
+                                sector: d.grupo,
+                                interestType: d.sector,
+                                countryCity: 'Colombia',
+                                origen: 'Landing Page'
+                            };
+                        }).filter(l => l.company && l.name);
+                    }
+                } else {
+                    console.warn(`SheetDB API returned status ${response.status}. Using fallback leads.`);
+                    sheetLeads = fallbackLeads;
                 }
-            } catch(e) { console.error('SheetDB sync error', e); }
+            } catch(e) { 
+                console.error('SheetDB sync error, using fallback leads:', e); 
+                sheetLeads = fallbackLeads;
+            }
+
+            // Filtrar si ya es cliente
+            const clientNames = window.appState.clients.map(c => c.name.toLowerCase());
+            window.appState.leads = sheetLeads.filter(l => !clientNames.includes(l.company.toLowerCase())).sort((a,b)=> b.score - a.score);
+            
+            renderHome();
+            renderLeads();
         }
 
         fetchSheetDBLeads();
