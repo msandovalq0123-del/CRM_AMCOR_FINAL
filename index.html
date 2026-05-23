@@ -14,6 +14,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0a0f1c; color: #f8fafc; margin: 0; }
         .tab-btn { padding: 1rem 1.5rem; border-bottom: 2px solid transparent; font-weight: 600; color: #64748b; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
@@ -54,12 +55,27 @@
             <button class="tab-btn" onclick="switchTab('dashboard', this)"><i data-feather="pie-chart" class="w-4 h-4"></i> Métricas</button>
             <button class="tab-btn" onclick="switchTab('triggers', this)"><i data-feather="zap" class="w-4 h-4"></i> Triggers Automáticos</button>
             <button class="tab-btn" onclick="switchTab('sectores', this)"><i data-feather="grid" class="w-4 h-4"></i> Sectores</button>
+            <button class="tab-btn" onclick="switchTab('dataset', this)"><i data-feather="database" class="w-4 h-4"></i> Dataset Académico</button>
         </div>
     </header>
 
     <main class="flex-1 overflow-y-auto relative bg-[#0a0f1c] pb-12">
         
-        <!-- INITIALIZATION BANNER REMOVED FOR PRODUCTION -->
+        <!-- BANNER DE INICIALIZACION PARA FIREBASE -->
+        <div id="firebase-init-banner" class="bg-blue-950/80 border border-blue-500/30 text-white p-6 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl hidden">
+            <div>
+                <h3 class="font-extrabold text-xl flex items-center gap-2 text-blue-400">
+                    <i data-feather="cloud-lightning" class="text-amber-400"></i> Inicializar Base de Datos en la Nube (Firebase)
+                </h3>
+                <p class="text-xs text-slate-300 mt-2">
+                    Detectamos que tu base de datos de Firebase no tiene clientes activos. Carga los 29 clientes y prospectos preconfigurados de Amcor para activar el CRM y simular los datos académicos.
+                </p>
+            </div>
+            <button id="btn-seed-firebase" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                <i data-feather="upload-cloud"></i> Cargar 29 Clientes ☁️
+            </button>
+        </div>
+
         <!-- 1. HOME (INICIO) -->
         <section id="home" class="section-view active max-w-7xl mx-auto">
             <div class="flex items-center gap-4 mb-10">
@@ -330,6 +346,146 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="sectors-grid"></div>
         </section>
 
+        <!-- 7. DATASET ACADÉMICO -->
+        <section id="dataset" class="section-view max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight">Ecosistema de Datos Académicos</h2>
+                    <p class="text-slate-400 mt-1">Simulación y enriquecimiento seguro de datos comerciales de 4 meses.</p>
+                </div>
+            </div>
+
+            <!-- FASE 5: NOTA VISIBLE DE METODOLOGÍA -->
+            <div class="bg-blue-950/40 border border-blue-500/30 rounded-2xl p-6 mb-8 shadow-lg shadow-blue-950/20">
+                <h3 class="text-blue-400 font-bold text-lg mb-2 flex items-center gap-2">
+                    <i data-feather="info" class="w-5 h-5 text-blue-400"></i> Metodología de Datos
+                </h3>
+                <p class="text-slate-200 text-sm leading-relaxed">
+                    Este dataset académico fue construido en hojas separadas para no afectar la conexión en tiempo real entre landing page, CRM y SheetDB. Combina datos actuales del prototipo Amcor AF con un histórico comercial enriquecido de 4 meses para fines académicos. Los datos enriquecidos o simulados no representan ventas reales oficiales de Amcor.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- COL 1 & 2: DICCIONARIO Y CONEXION COLAB -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="card-stat bg-brand-panel border border-brand-border rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <i data-feather="code" class="text-brand-accent"></i> Conexión con Google Colab
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            Puedes importar los datasets enriquecidos en tu libreta de Google Colab en modo <strong>lectura directa (consulta)</strong> utilizando la API de SheetDB con el parámetro de hoja correspondiente:
+                        </p>
+                        <div class="bg-[#050810] p-4 rounded-xl border border-brand-border font-mono text-xs text-blue-300 space-y-3 shadow-inner">
+                            <p><span class="text-slate-500"># URL base de SheetDB:</span><br>https://sheetdb.io/api/v1/knv72rpe7i4ex</p>
+                            <p><span class="text-slate-500"># Código Python para leer en Colab (ejemplo):</span><br>
+                                <span class="text-purple-400">import</span> pandas <span class="text-purple-400">as</span> pd<br>
+                                <span class="text-slate-400"># Reemplaza 'dataset_consolidado_4m' por cualquier otra pestaña</span><br>
+                                url = <span class="text-green-400">"https://sheetdb.io/api/v1/knv72rpe7i4ex?sheet=dataset_consolidado_4m"</span><br>
+                                df = pd.read_json(url)<br>
+                                print(df.head())
+                            </p>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2 text-[10px] text-slate-400">
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=clientes_enriquecidos_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=leads_enriquecidos_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=oportunidades_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=transacciones_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=rfm_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=triggers_4m</span>
+                            <span class="px-2 py-1 bg-slate-900 rounded border border-slate-800 font-mono">?sheet=dataset_consolidado_4m</span>
+                        </div>
+                    </div>
+
+                    <div class="card-stat bg-brand-panel border border-brand-border rounded-2xl p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-feather="book-open" class="text-brand-accent"></i> Vista Previa del Diccionario de Datos
+                            </h3>
+                            <button onclick="window.downloadSingleFile('diccionario_datos')" class="text-xs text-brand-accent hover:underline flex items-center gap-1">
+                                Descargar Diccionario (CSV) <i data-feather="download" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-[300px] border border-brand-border rounded-xl">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-[#0b1120] text-slate-400 border-b border-brand-border">
+                                        <th class="p-3 font-semibold">Campo</th>
+                                        <th class="p-3 font-semibold">Descripción</th>
+                                        <th class="p-3 font-semibold">Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="diccionario-preview-body" class="bg-brand-panel text-slate-300 divide-y divide-slate-800/40">
+                                    <!-- Injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 3: EXPORTACION Y CARGA -->
+                <div class="space-y-6">
+                    <div class="card-stat bg-gradient-to-br from-brand-panel to-[#111a2c] border-emerald-500/20 rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-emerald-400 mb-2 flex items-center gap-2">
+                            <i data-feather="download-cloud" class="w-5 h-5"></i> Exportar Dataset
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-6">
+                            Genera y descarga en un solo archivo comprimido ZIP los 9 datasets comerciales enriquecidos para su uso en Excel, R o Google Colab.
+                        </p>
+                        
+                        <button onclick="window.exportDatasetAcademico()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl transition-all transform hover:-translate-y-0.5 shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-3">
+                            <i data-feather="file-text" class="w-5 h-5"></i> Exportar Dataset Académico
+                        </button>
+                        
+                        <div class="mt-6 border-t border-slate-800 pt-4 space-y-2">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Descargas Individuales</h4>
+                            <div class="grid grid-cols-1 gap-2 max-h-[160px] overflow-y-auto pr-1">
+                                <button onclick="window.downloadSingleFile('clientes')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>clientes_enriquecidos_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('leads')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>leads_enriquecidos_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('oportunidades')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>oportunidades_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('transacciones')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>transacciones_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('rfm')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>rfm_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('triggers')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>triggers_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('consolidado_csv')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>dataset_consolidado_4m.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('consolidado_json')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>dataset_consolidado_4m.json</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                                <button onclick="window.downloadSingleFile('metodologia')" class="w-full text-left px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-xs text-slate-300 rounded border border-slate-800 flex justify-between items-center">
+                                    <span>metodologia_datos.csv</span> <i data-feather="download" class="w-3 h-3 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-stat">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <i data-feather="cloud-lightning" class="text-amber-400"></i> Sincronizar en Google Sheet
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">
+                            Si ya creaste manualmente las nuevas pestañas en tu Google Sheet, puedes presionar este botón para subir el dataset completo a la nube para lectura directa.
+                        </p>
+                        <button onclick="window.cargarDatasetsASheetDB()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-2">
+                            <i data-feather="upload" class="w-4 h-4"></i> Cargar Datasets a SheetDB (Nube)
+                        </button>
+                        <div id="upload-status" class="text-[10px] text-slate-400 mt-2 hidden text-center"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- FIREBASE AND INTEL LOGIC -->
@@ -391,7 +547,15 @@
 
             window.appState.clients = clients;
             
-            // Modos de inicialización eliminados para producción.
+            // Toggle initialization banner
+            const initBanner = document.getElementById('firebase-init-banner');
+            if (initBanner) {
+                if (clients.length === 0) {
+                    initBanner.classList.remove('hidden');
+                } else {
+                    initBanner.classList.add('hidden');
+                }
+            }
 
             renderHome();
             renderRFM();
@@ -403,7 +567,7 @@
         // Reemplazo de leads Firebase por SheetDB en tiempo real
         async function fetchSheetDBLeads() {
             try {
-              const response = await fetch('https://sheetdb.io/api/v1/knv72rpe7i4ex');
+                const response = await fetch('https://sheetdb.io/api/v1/knv72rpe7i4ex');
                 const data = await response.json();
                 if(Array.isArray(data)) {
                     const sheetLeads = data.map(d => {
@@ -536,7 +700,7 @@
             
             if(id.startsWith('SheetDB_')) {
                 const ts = id.split('_')[1];
-            fetch(`https://sheetdb.io/api/v1/knv72rpe7i4ex/timestamp/${ts}`, { method: 'DELETE' });
+                await fetch(`https://sheetdb.io/api/v1/knv72rpe7i4ex/timestamp/${ts}`, { method: 'DELETE' });
                 fetchSheetDBLeads();
             } else {
                 await deleteDoc(doc(db, 'leads', id));
@@ -636,12 +800,6 @@
             feather.replace();
         }
 
-        // 6. RENDER SECTORS
-        const taxonomy = [{n: '🥫 ALIMENTOS Y BEBIDAS', c: '#22c97a'}, {n:'💆 CUIDADO PERSONAL', c:'#2d7aff'}, {n:'🧹 LIMPIEZA DEL HOGAR', c:'#a78bfa'}, {n:'💊 FARMACÉUTICA', c:'#f04040'}, {n:'🥛 LÁCTEOS', c:'#4dc9f0'}, {n:'🐾 MASCOTAS', c:'#f5a623'}, {n:'📦 INDUSTRIAL / PACKAGING', c:'#c47e3a'}, {n:'☕ CAFÉ Y BEBIDAS CALIENTES', c:'#8d6534'}, {n:'🧂 CONDIMENTOS Y SALSAS', c:'#e55a3a'}];
-        function renderSectors() {
-            document.getElementById('sectors-grid').innerHTML = taxonomy.map(s => {
-                const sClients = window.appState.clients.filter(c => c.sectors && c.sectors.includes(s.n)).sort((a,b)=>b.totalVolume-a.totalVolume);
-                return `
                 <div class="card-stat p-5">
                     <div class="flex justify-between items-start mb-4 pb-4 border-b border-brand-border">
                         <div><h3 class="font-bold text-white text-base flex items-center gap-2"><span style="color:${s.c};font-size:16px;">●</span> ${s.n.substring(2)}</h3><p class="text-slate-400 text-xs mt-1">${sClients.length} cuentas RFM</p></div>
@@ -654,7 +812,665 @@
             }).join('');
         }
 
+        // --- DATASET ACADÉMICO ENRIQUECIDO ---
+        
+        // Diccionario de datos global
+        const diccionario = [
+            { campo: "id_cliente", descripcion: "Identificador único de la empresa (CLI_ o LEAD_)", tipo: "Texto" },
+            { campo: "nombre_empresa", descripcion: "Nombre legal o comercial de la empresa", tipo: "Texto" },
+            { campo: "tipo_registro", descripcion: "Clasificación en el CRM (Cliente, Oportunidad, Lead)", tipo: "Texto" },
+            { campo: "fecha_creacion", descripcion: "Fecha de ingreso del prospecto en el sistema", tipo: "Fecha (YYYY-MM-DD)" },
+            { campo: "fecha_primer_contacto", descripcion: "Fecha en la que el equipo comercial contactó al lead", tipo: "Fecha (YYYY-MM-DD)" },
+            { campo: "industria", descripcion: "Categoría de industria (Alimentos, Cuidado Personal, etc.)", tipo: "Texto" },
+            { campo: "sector", descripcion: "Aplicación o sector específico (café, detergente, etc.)", tipo: "Texto" },
+            { campo: "país", descripcion: "País de origen", tipo: "Texto" },
+            { campo: "ciudad", descripcion: "Ciudad de operación del cliente", tipo: "Texto" },
+            { campo: "tamaño_empresa", descripcion: "Clasificación de tamaño corporativo (Small, Medium, Enterprise)", tipo: "Texto" },
+            { campo: "cargo_contacto", descripcion: "Puesto de la persona clave de contacto", tipo: "Texto" },
+            { campo: "canal_origen", descripcion: "Canal de captación de marketing/ventas", tipo: "Texto" },
+            { campo: "dispositivo_principal", descripcion: "Dispositivo más usado al navegar en la landing", tipo: "Texto" },
+            { campo: "visitas_landing", descripcion: "Número de visitas a la landing page en 4 meses", tipo: "Entero" },
+            { campo: "scroll_realizado", descripcion: "Scroll promedio del usuario en la landing page (porcentaje)", tipo: "Porcentaje" },
+            { campo: "formulario_enviado", descripcion: "Si el prospecto envió formulario de cotización", tipo: "Texto (Sí/No)" },
+            { campo: "descarga_catalogo", descripcion: "Si el usuario descargó el portafolio PDF de Amcor", tipo: "Texto (Sí/No)" },
+            { campo: "engagement_score", descripcion: "Puntaje de interacción con la marca (1-100)", tipo: "Entero" },
+            { campo: "lead_score", descripcion: "Puntaje de calificación comercial (1-100)", tipo: "Entero" },
+            { campo: "etapa_pipeline", descripcion: "Etapa en el embudo de ventas actual", tipo: "Texto" },
+            { campo: "producto_interes", descripcion: "Producto específico cotizado", tipo: "Texto" },
+            { campo: "valor_cotizacion_usd", descripcion: "Valor estimado de la oportunidad comercial en dólares", tipo: "Moneda (USD)" },
+            { campo: "compra_realizada", descripcion: "Indica si se concretó alguna compra", tipo: "Texto (Sí/No)" },
+            { campo: "fecha_primera_compra", descripcion: "Fecha de la primera compra registrada", tipo: "Fecha (YYYY-MM-DD)" },
+            { campo: "numero_pedidos", descripcion: "Cantidad total de órdenes completadas", tipo: "Entero" },
+            { campo: "frecuencia_compra_mensual", descripcion: "Promedio de órdenes mensuales", tipo: "Decimal" },
+            { campo: "valor_total_compras_usd", descripcion: "Monto total acumulado de compras", tipo: "Moneda (USD)" },
+            { campo: "ticket_promedio_usd", descripcion: "Valor promedio por pedido", tipo: "Moneda (USD)" },
+            { campo: "margen_estimado_pct", descripcion: "Margen operativo proyectado de la cuenta", tipo: "Porcentaje" },
+            { campo: "fecha_ultima_compra", descripcion: "Fecha del pedido más reciente", tipo: "Fecha (YYYY-MM-DD)" },
+            { campo: "dias_desde_ultima_compra", descripcion: "Días de inactividad comercial transcurridos", tipo: "Entero" },
+            { campo: "estado_cliente", descripcion: "Estado de la relación (Activo, En Riesgo, Perdido, Prospecto)", tipo: "Texto" },
+            { campo: "churn_risk", descripcion: "Probabilidad de abandono del cliente (Bajo, Medio, Alto, N/A)", tipo: "Texto" },
+            { campo: "motivo_perdida", descripcion: "Razón principal de no conversión o churn", tipo: "Texto" },
+            { campo: "R_score", descripcion: "Puntaje de recencia RFM (1-10)", tipo: "Decimal" },
+            { campo: "F_score", descripcion: "Puntaje de frecuencia RFM (1-10)", tipo: "Decimal" },
+            { campo: "M_score", descripcion: "Puntaje monetario RFM (1-10)", tipo: "Decimal" },
+            { campo: "RFM_score", descripcion: "Puntaje consolidado RFM del cliente", tipo: "Decimal" },
+            { campo: "segmento_RFM", descripcion: "Segmento RFM resultante (Fiel, Leal, Reconexión, Pérdida, Nuevo)", tipo: "Texto" },
+            { campo: "CLV_estimado_usd", descripcion: "Customer Lifetime Value a 3 años", tipo: "Moneda (USD)" },
+            { campo: "probabilidad_conversion", descripcion: "Probabilidad de cierre de venta para prospectos (0.0 a 1.0)", tipo: "Decimal" },
+            { campo: "trigger_activo", descripcion: "Estrategia o automatización disparada actualmente", tipo: "Texto" },
+            { campo: "proxima_accion_recomendada", descripcion: "Plan de acción para el ejecutivo comercial", tipo: "Texto" }
+        ];
+
+        // Metodología
+        const metodologia = [
+            {
+                Metodologia_de_Datos: "Este dataset académico fue construido en hojas separadas para no afectar la conexión en tiempo real entre landing page, CRM y SheetDB. Combina datos actuales del prototipo Amcor AF con un histórico comercial enriquecido de 4 meses para fines académicos. Los datos enriquecidos o simulados no representan ventas reales oficiales de Amcor."
+            }
+        ];
+
+        // Render diccionario preview
+        const dictPreviewHtml = diccionario.map(d => `
+            <tr class="table-row">
+                <td class="p-3 font-semibold text-white font-mono">${d.campo}</td>
+                <td class="p-3 text-slate-400">${d.descripcion}</td>
+                <td class="p-3"><span class="px-2 py-0.5 bg-slate-900 text-slate-300 rounded border border-slate-800 text-[10px] font-mono">${d.tipo}</span></td>
+            </tr>
+        `).join('');
+        document.getElementById('diccionario-preview-body').innerHTML = dictPreviewHtml;
+
+        // Helper para convertir a CSV
+        function arrayToCSV(arr) {
+            if (!arr || !arr.length) return "";
+            const headers = Object.keys(arr[0]);
+            const csvRows = [];
+            csvRows.push(headers.join(",")); // Headers
+
+            for (const row of arr) {
+                const values = headers.map(header => {
+                    let val = row[header];
+                    if (val === undefined || val === null) val = "";
+                    val = String(val);
+                    if (val.includes(",") || val.includes('"') || val.includes("\n") || val.includes("\r")) {
+                        val = '"' + val.replace(/"/g, '""') + '"';
+                    }
+                    return val;
+                });
+                csvRows.push(values.join(","));
+            }
+            return csvRows.join("\n");
+        }
+
+        // Helper para guardar archivos localmente en el navegador
+        function saveBlob(blob, fileName) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Generador de datos simulados
+        function generateSimulatedData() {
+            const clientsSeed = window.appState.clients || [];
+            const leadsSeed = window.appState.leads || [];
+
+            const randomDate = (start, end) => {
+                return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            };
+
+            const formatDateString = (d) => {
+                if (!d) return "";
+                return d.toISOString().split('T')[0];
+            };
+
+            const addDays = (d, days) => {
+                const result = new Date(d);
+                result.setDate(result.getDate() + days);
+                return result;
+            };
+
+            const industries = ["Alimentos y Bebidas", "Cuidado Personal", "Limpieza del Hogar", "Farmacéutica", "Mascotas", "Lácteos"];
+            const canals = ["Referido", "Email B2B", "LinkedIn Ads", "Feria Industrial", "Búsqueda Orgánica"];
+            const devices = ["Desktop", "Mobile"];
+            const contactRoles = ["Gerente de Compras", "Director de Operaciones", "Jefe de Supply Chain", "Coordinador de Empaque", "Analista de Abastecimiento"];
+            const cities = ["Cali", "Bogotá", "Medellín", "Barranquilla", "Manizales"];
+            const lossReasons = ["Competencia por precio", "Tiempos de entrega largos", "Falta de capacidad técnica", "Cambio de proveedor interno", "Especificaciones de barrera no cumplidas"];
+
+            const startDate = new Date("2026-01-23");
+            const endDate = new Date("2026-05-23");
+
+            const clientesEnriquecidos = [];
+            const leadsEnriquecidos = [];
+            const oportunidades = [];
+            const transacciones = [];
+            const rfmList = [];
+            const triggersList = [];
+            const consolidatedList = [];
+
+            // --- CLIENTES ---
+            clientsSeed.forEach((c, idx) => {
+                const id = `CLI_${1000 + idx}`;
+                const sectorRaw = c.sectors && c.sectors.length ? c.sectors[0] : "";
+                let ind = "Alimentos y Bebidas";
+                if (sectorRaw.includes("CUIDADO PERSONAL")) ind = "Cuidado Personal";
+                else if (sectorRaw.includes("LIMPIEZA")) ind = "Limpieza del Hogar";
+                else if (sectorRaw.includes("FARMACÉUTICA")) ind = "Farmacéutica";
+                else if (sectorRaw.includes("MASCOTAS")) ind = "Mascotas";
+                else if (sectorRaw.includes("LÁCTEOS")) ind = "Lácteos";
+
+                const isBig = c.totalVolume > 50000;
+                const tamaño = isBig ? "Enterprise" : (c.totalVolume > 10000 ? "Medium" : "Small");
+
+                const numPedidos = c.ordersCount || Math.floor(Math.random() * 8) + 1;
+                const totalVol = c.totalVolume || numPedidos * (Math.random() * 5000 + 1000);
+                const valorTotalUSD = totalVol * 3.25;
+                const ticketPromUSD = valorTotalUSD / numPedidos;
+
+                let dateUltima = c.lastOrderDate ? new Date(c.lastOrderDate) : randomDate(startDate, endDate);
+                if (dateUltima > endDate) dateUltima = endDate;
+                if (dateUltima < startDate) dateUltima = startDate;
+
+                const diasDiff = Math.max(0, Math.floor((endDate - dateUltima) / (1000 * 60 * 60 * 24)));
+
+                let estado = "Activo";
+                let risk = "Bajo";
+                if (diasDiff > 45 && diasDiff <= 90) {
+                    estado = "En Riesgo";
+                    risk = "Medio";
+                } else if (diasDiff > 90) {
+                    estado = "Perdido";
+                    risk = "Alto";
+                }
+
+                const R_s = c.rScore || (10 - Math.min(10, diasDiff / 10));
+                const F_s = c.fScore || Math.min(10, (numPedidos / 10) * 10);
+                const M_s = c.mScore || Math.min(10, (totalVol / 100000) * 10);
+                const RFM_s = c.scoreRFM || (R_s * 0.3 + F_s * 0.3 + M_s * 0.4);
+
+                const clv = valorTotalUSD * 3.5;
+
+                const creDate = randomDate(new Date("2025-01-01"), new Date("2025-10-01"));
+                const fContacto = addDays(creDate, Math.floor(Math.random() * 5) + 1);
+                
+                const ultDate = dateUltima;
+                const primCompra = randomDate(addDays(creDate, 10), addDays(ultDate, -30));
+                const fPrimera = primCompra < ultDate ? primCompra : addDays(ultDate, -15);
+
+                const clientRecord = {
+                    id_cliente: id,
+                    nombre_empresa: c.name,
+                    tipo_registro: "Cliente",
+                    fecha_creacion: formatDateString(creDate),
+                    fecha_primer_contacto: formatDateString(fContacto),
+                    industria: ind,
+                    sector: sectorRaw.replace(/^[^\s]+\s/, "") || "Empaques flexibles",
+                    país: c.country || "Colombia",
+                    ciudad: cities[idx % cities.length],
+                    tamaño_empresa: tamaño,
+                    cargo_contacto: contactRoles[idx % contactRoles.length],
+                    canal_origen: canals[idx % canals.length],
+                    dispositivo_principal: devices[idx % devices.length],
+                    visitas_landing: Math.floor(Math.random() * 15) + 5,
+                    scroll_realizado: (Math.floor(Math.random() * 20) + 80) + "%",
+                    formulario_enviado: "Sí",
+                    descarga_catalogo: Math.random() > 0.3 ? "Sí" : "No",
+                    engagement_score: Math.floor(Math.random() * 30) + 70,
+                    lead_score: Math.floor(Math.random() * 30) + 70,
+                    etapa_pipeline: "✅ COMPRA CONFIRMADA",
+                    producto_interes: c.topProducts && c.topProducts.length ? c.topProducts[0] : "Empaque Trilaminado de Barrera",
+                    valor_cotizacion_usd: Math.round(valorTotalUSD * 1.1),
+                    compra_realizada: "Sí",
+                    fecha_primera_compra: formatDateString(fPrimera),
+                    numero_pedidos: numPedidos,
+                    frecuencia_compra_mensual: parseFloat((numPedidos / 4).toFixed(1)),
+                    valor_total_compras_usd: Math.round(valorTotalUSD),
+                    ticket_promedio_usd: Math.round(ticketPromUSD),
+                    margen_estimado_pct: (Math.random() * 15 + 15).toFixed(1) + "%",
+                    fecha_ultima_compra: formatDateString(dateUltima),
+                    dias_desde_ultima_compra: diasDiff,
+                    estado_cliente: estado,
+                    churn_risk: risk,
+                    motivo_perdida: estado === "Perdido" ? lossReasons[idx % lossReasons.length] : "",
+                    R_score: parseFloat(R_s.toFixed(1)),
+                    F_score: parseFloat(F_s.toFixed(1)),
+                    M_score: parseFloat(M_s.toFixed(1)),
+                    RFM_score: parseFloat(RFM_s.toFixed(1)),
+                    segmento_RFM: c.segment || "Leal",
+                    CLV_estimado_usd: Math.round(clv),
+                    probabilidad_conversion: 1.0,
+                    trigger_activo: c.triggerAction || "Ninguno",
+                    proxima_accion_recomendada: estado === "Activo" ? "Mantener programa estándar de fidelidad" : (estado === "En Riesgo" ? "Llamada comercial y visita técnica prioritaria" : "Campaña de reconexión y descuento del 10% en recompra")
+                };
+
+                clientesEnriquecidos.push(clientRecord);
+                consolidatedList.push(clientRecord);
+
+                // Generar transacciones para este cliente
+                let currentDateCursor = fPrimera;
+                const spanTime = Math.max(1, ultDate.getTime() - fPrimera.getTime());
+                const interval = spanTime / numPedidos;
+
+                for (let i = 0; i < numPedidos; i++) {
+                    let trxDate = new Date(currentDateCursor.getTime() + (i * interval) + (Math.random() - 0.5) * (interval * 0.2));
+                    if (trxDate > endDate) trxDate = endDate;
+                    if (trxDate < startDate) trxDate = startDate;
+                    if (i === numPedidos - 1) trxDate = ultDate;
+
+                    const trVol = Math.round((valorTotalUSD / 3.25) / numPedidos * (Math.random() * 0.4 + 0.8));
+                    const trVal = Math.round(trVol * 3.25);
+
+                    transacciones.push({
+                        id_transaccion: `TRX_${10000 + transacciones.length}`,
+                        id_cliente: id,
+                        nombre_empresa: c.name,
+                        fecha_transaccion: formatDateString(trxDate),
+                        volumen_kg: trVol,
+                        valor_usd: trVal,
+                        producto_adquirido: clientRecord.producto_interes
+                    });
+                }
+
+                // RFM record
+                rfmList.push({
+                    id_cliente: id,
+                    nombre_empresa: c.name,
+                    dias_desde_ultima_compra: diasDiff,
+                    numero_pedidos: numPedidos,
+                    valor_total_compras_usd: Math.round(valorTotalUSD),
+                    R_score: parseFloat(R_s.toFixed(1)),
+                    F_score: parseFloat(F_s.toFixed(1)),
+                    M_score: parseFloat(M_s.toFixed(1)),
+                    RFM_score: parseFloat(RFM_s.toFixed(1)),
+                    segmento_RFM: c.segment || "Leal"
+                });
+            });
+
+            // --- LEADS ---
+            leadsSeed.forEach((l, idx) => {
+                const id = `LEAD_${5000 + idx}`;
+                let ind = l.sector || "Alimentos y Bebidas";
+                if (ind.includes("Otros") || ind.includes("Colombia") || ind.includes("Captación")) {
+                    ind = industries[idx % industries.length];
+                }
+
+                const vol = l.estimatedVolume || Math.floor(Math.random() * 8000) + 1000;
+                const score = l.score || Math.floor(Math.random() * 60) + 20;
+                const canal = canals[idx % canals.length];
+                
+                let finalScore = score;
+                if (["Referido", "Email B2B", "LinkedIn Ads"].includes(canal)) {
+                    finalScore = Math.min(100, score + 15);
+                }
+
+                const creDate = randomDate(startDate, endDate);
+                const stage = l.stage || "🆕 NUEVO";
+
+                let tipoReg = "Lead";
+                if (["📋 COTIZADO", "🤝 EN NEGOCIACIÓN"].includes(stage)) {
+                    tipoReg = "Oportunidad";
+                }
+
+                const leadItem = {
+                    id_cliente: id,
+                    nombre_empresa: l.company,
+                    tipo_registro: tipoReg,
+                    fecha_creacion: formatDateString(creDate),
+                    fecha_primer_contacto: formatDateString(addDays(creDate, Math.floor(Math.random() * 4) + 1)),
+                    industria: ind,
+                    sector: l.interestType || "Empaque Flexible Genérico",
+                    país: "Colombia",
+                    ciudad: cities[idx % cities.length],
+                    tamaño_empresa: vol > 20000 ? "Enterprise" : (vol > 5000 ? "Medium" : "Small"),
+                    cargo_contacto: contactRoles[idx % contactRoles.length],
+                    canal_origen: canal,
+                    dispositivo_principal: devices[idx % devices.length],
+                    visitas_landing: Math.floor(Math.random() * 6) + 1,
+                    scroll_realizado: (Math.floor(Math.random() * 50) + 40) + "%",
+                    formulario_enviado: "Sí",
+                    descarga_catalogo: Math.random() > 0.5 ? "Sí" : "No",
+                    engagement_score: Math.floor(finalScore * 0.9),
+                    lead_score: finalScore,
+                    etapa_pipeline: stage,
+                    producto_interes: l.interestType || "Empaque Flexible Genérico",
+                    valor_cotizacion_usd: Math.round(vol * 3.5),
+                    compra_realizada: "No",
+                    fecha_primera_compra: "",
+                    numero_pedidos: 0,
+                    frecuencia_compra_mensual: 0,
+                    valor_total_compras_usd: 0,
+                    ticket_promedio_usd: 0,
+                    margen_estimado_pct: (Math.random() * 10 + 10).toFixed(1) + "%",
+                    fecha_ultima_compra: "",
+                    dias_desde_ultima_compra: "",
+                    estado_cliente: "Prospecto",
+                    churn_risk: "N/A",
+                    motivo_perdida: "",
+                    R_score: "", F_score: "", M_score: "", RFM_score: "",
+                    segmento_RFM: "Nuevo",
+                    CLV_estimado_usd: 0,
+                    probabilidad_conversion: parseFloat((finalScore / 100).toFixed(2)),
+                    trigger_activo: "Confirmación de Cotización",
+                    proxima_accion_recomendada: stage === "🆕 NUEVO" ? "Llamar para calificar necesidades" : "Enviar cotización formal detallada"
+                };
+
+                leadsEnriquecidos.push(leadItem);
+                consolidatedList.push(leadItem);
+                if (tipoReg === "Oportunidad") oportunidades.push(leadItem);
+            });
+
+            // Expandir leads
+            const currentLeadsCount = leadsEnriquecidos.length;
+            const additionalLeadsCount = Math.max(15, 60 - currentLeadsCount);
+            const mockLeadCompanies = [
+                "Galletas Carabobo S.A.", "Alimentos Polar S.A.", "Harina del Valle", "Cosméticos Vogue", 
+                "Droguerías La Rebaja", "Lácteos El Recreo", "Jugos Hit Cali", "Café Águila Roja",
+                "Salchichas Zenú", "Arroz Diana", "Aceites Fino", "Confites Súper", "Pan Bimbo S.A.",
+                "Quesos Del Vecchio", "Pulpas El Campo", "Empanadas El Cohete", "Detergentes Bio", "Jabones Heno"
+            ];
+
+            for (let i = 0; i < additionalLeadsCount; i++) {
+                const companyName = mockLeadCompanies[i % mockLeadCompanies.length] + (i > mockLeadCompanies.length ? " Sucursal" : "");
+                const id = `LEAD_${5100 + i}`;
+                const ind = industries[i % industries.length];
+                const vol = Math.floor(Math.random() * 35000) + 1200;
+                const canal = canals[i % canals.length];
+                
+                let score = Math.floor(Math.random() * 60) + 20;
+                if (["Referido", "Email B2B", "LinkedIn Ads"].includes(canal)) {
+                    score = Math.min(100, score + 15);
+                }
+                
+                const creDate = randomDate(startDate, endDate);
+                const stageList = ["🆕 NUEVO", "📞 PRIMER CONTACTO", "📋 COTIZADO", "🤝 EN NEGOCIACIÓN"];
+                const stage = stageList[i % stageList.length];
+                const tipoReg = ["📋 COTIZADO", "🤝 EN NEGOCIACIÓN"].includes(stage) ? "Oportunidad" : "Lead";
+                const valCot = vol * 3.4;
+
+                const leadItem = {
+                    id_cliente: id,
+                    nombre_empresa: companyName,
+                    tipo_registro: tipoReg,
+                    fecha_creacion: formatDateString(creDate),
+                    fecha_primer_contacto: formatDateString(addDays(creDate, Math.floor(Math.random() * 3) + 1)),
+                    industria: ind,
+                    sector: "Empaques Laminados Flexibles",
+                    país: "Colombia",
+                    ciudad: cities[i % cities.length],
+                    tamaño_empresa: vol > 25000 ? "Enterprise" : (vol > 8000 ? "Medium" : "Small"),
+                    cargo_contacto: contactRoles[i % contactRoles.length],
+                    canal_origen: canal,
+                    dispositivo_principal: devices[i % devices.length],
+                    visitas_landing: Math.floor(Math.random() * 5) + 1,
+                    scroll_realizado: (Math.floor(Math.random() * 40) + 50) + "%",
+                    formulario_enviado: "Sí",
+                    descarga_catalogo: Math.random() > 0.4 ? "Sí" : "No",
+                    engagement_score: Math.floor(score * 0.95),
+                    lead_score: score,
+                    etapa_pipeline: stage,
+                    producto_interes: "Bolsas Flexibles Herméticas",
+                    valor_cotizacion_usd: Math.round(valCot),
+                    compra_realizada: "No",
+                    fecha_primera_compra: "",
+                    numero_pedidos: 0,
+                    frecuencia_compra_mensual: 0,
+                    valor_total_compras_usd: 0,
+                    ticket_promedio_usd: 0,
+                    margen_estimado_pct: (Math.random() * 8 + 12).toFixed(1) + "%",
+                    fecha_ultima_compra: "",
+                    dias_desde_ultima_compra: "",
+                    estado_cliente: "Prospecto",
+                    churn_risk: "N/A",
+                    motivo_perdida: "",
+                    R_score: "", F_score: "", M_score: "", RFM_score: "",
+                    segmento_RFM: "Nuevo",
+                    CLV_estimado_usd: 0,
+                    probabilidad_conversion: parseFloat((score / 100).toFixed(2)),
+                    trigger_activo: "Confirmación de Cotización",
+                    proxima_accion_recomendada: stage === "🆕 NUEVO" ? "Llamar para calificar necesidades" : (stage === "📞 PRIMER CONTACTO" ? "Agendar videollamada técnica" : "Hacer seguimiento comercial a la oferta")
+                };
+
+                leadsEnriquecidos.push(leadItem);
+                consolidatedList.push(leadItem);
+                if (tipoReg === "Oportunidad") oportunidades.push(leadItem);
+            }
+
+            // --- TRIGGERS HISTORY ---
+            let triggerIndex = 1;
+            clientesEnriquecidos.forEach((c, idx) => {
+                if (c.trigger_activo && c.trigger_activo !== "Ninguno") {
+                    triggersList.push({
+                        id_trigger: `TRG_${2000 + triggerIndex++}`,
+                        fecha_ejecucion: formatDateString(addDays(new Date(c.fecha_ultima_compra), 2)),
+                        id_cliente: c.id_cliente,
+                        nombre_empresa: c.nombre_empresa,
+                        tipo_registro: "Cliente",
+                        trigger_activo: c.trigger_activo,
+                        proxima_accion_recomendada: c.proxima_accion_recomendada,
+                        estado_envio: "Enviado exitosamente"
+                    });
+                }
+            });
+
+            leadsEnriquecidos.forEach((l, idx) => {
+                triggersList.push({
+                    id_trigger: `TRG_${2000 + triggerIndex++}`,
+                    fecha_ejecucion: formatDateString(addDays(new Date(l.fecha_creacion), 1)),
+                    id_cliente: l.id_cliente,
+                    nombre_empresa: l.nombre_empresa,
+                    tipo_registro: l.tipo_registro,
+                    trigger_activo: "Confirmación de Cotización",
+                    proxima_accion_recomendada: l.proxima_accion_recomendada,
+                    estado_envio: "Enviado exitosamente"
+                });
+            });
+
+            return {
+                clientes_enriquecidos_4m: clientesEnriquecidos,
+                leads_enriquecidos_4m: leadsEnriquecidos,
+                oportunidades_4m: oportunidades,
+                transacciones_4m: transacciones,
+                rfm_4m: rfmList,
+                triggers_4m: triggersList,
+                dataset_consolidado_4m: consolidatedList,
+                diccionario_datos: diccionario,
+                metodologia_datos: metodologia
+            };
+        }
+
+        // Descarga de archivos ZIP
+        window.exportDatasetAcademico = function() {
+            try {
+                const zip = new JSZip();
+                const datasets = generateSimulatedData();
+
+                zip.file("clientes_enriquecidos_4m.csv", arrayToCSV(datasets.clientes_enriquecidos_4m));
+                zip.file("leads_enriquecidos_4m.csv", arrayToCSV(datasets.leads_enriquecidos_4m));
+                zip.file("oportunidades_4m.csv", arrayToCSV(datasets.oportunidades_4m));
+                zip.file("transacciones_4m.csv", arrayToCSV(datasets.transacciones_4m));
+                zip.file("rfm_4m.csv", arrayToCSV(datasets.rfm_4m));
+                zip.file("triggers_4m.csv", arrayToCSV(datasets.triggers_4m));
+                zip.file("dataset_consolidado_4m.csv", arrayToCSV(datasets.dataset_consolidado_4m));
+                zip.file("dataset_consolidado_4m.json", JSON.stringify(datasets.dataset_consolidado_4m, null, 2));
+                zip.file("diccionario_datos.csv", arrayToCSV(datasets.diccionario_datos));
+                zip.file("metodologia_datos.csv", arrayToCSV(datasets.metodologia_datos));
+
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    saveBlob(content, "dataset_academico_amcor_4m.zip");
+                });
+            } catch(e) {
+                alert("Error generando el archivo ZIP: " + e.message);
+            }
+        };
+
+        // Descargas individuales
+        window.downloadSingleFile = function(key) {
+            const datasets = generateSimulatedData();
+            let data, fileName;
+
+            switch(key) {
+                case 'clientes':
+                    data = arrayToCSV(datasets.clientes_enriquecidos_4m);
+                    fileName = "clientes_enriquecidos_4m.csv";
+                    break;
+                case 'leads':
+                    data = arrayToCSV(datasets.leads_enriquecidos_4m);
+                    fileName = "leads_enriquecidos_4m.csv";
+                    break;
+                case 'oportunidades':
+                    data = arrayToCSV(datasets.oportunidades_4m);
+                    fileName = "oportunidades_4m.csv";
+                    break;
+                case 'transacciones':
+                    data = arrayToCSV(datasets.transacciones_4m);
+                    fileName = "transacciones_4m.csv";
+                    break;
+                case 'rfm':
+                    data = arrayToCSV(datasets.rfm_4m);
+                    fileName = "rfm_4m.csv";
+                    break;
+                case 'triggers':
+                    data = arrayToCSV(datasets.triggers_4m);
+                    fileName = "triggers_4m.csv";
+                    break;
+                case 'consolidado_csv':
+                    data = arrayToCSV(datasets.dataset_consolidado_4m);
+                    fileName = "dataset_consolidado_4m.csv";
+                    break;
+                case 'consolidado_json':
+                    data = JSON.stringify(datasets.dataset_consolidado_4m, null, 2);
+                    fileName = "dataset_consolidado_4m.json";
+                    break;
+                case 'diccionario_datos':
+                    data = arrayToCSV(datasets.diccionario_datos);
+                    fileName = "diccionario_datos.csv";
+                    break;
+                case 'metodologia':
+                    data = arrayToCSV(datasets.metodologia_datos);
+                    fileName = "metodologia_datos.csv";
+                    break;
+            }
+
+            const blob = new Blob([data], {type: key === 'consolidado_json' ? "application/json" : "text/csv;charset=utf-8;"});
+            saveBlob(blob, fileName);
+        };
+
+        // Subir a SheetDB
+        window.cargarDatasetsASheetDB = async function() {
+            const statusDiv = document.getElementById('upload-status');
+            statusDiv.classList.remove('hidden');
+            statusDiv.innerText = "Preparando datos comerciales...";
+            statusDiv.style.color = "#fbbf24";
+
+            const datasets = generateSimulatedData();
+            const sheets = [
+                { name: 'clientes_enriquecidos_4m', data: datasets.clientes_enriquecidos_4m },
+                { name: 'leads_enriquecidos_4m', data: datasets.leads_enriquecidos_4m },
+                { name: 'oportunidades_4m', data: datasets.oportunidades_4m },
+                { name: 'transacciones_4m', data: datasets.transacciones_4m },
+                { name: 'rfm_4m', data: datasets.rfm_4m },
+                { name: 'triggers_4m', data: datasets.triggers_4m },
+                { name: 'dataset_consolidado_4m', data: datasets.dataset_consolidado_4m },
+                { name: 'diccionario_datos', data: datasets.diccionario_datos },
+                { name: 'metodologia_datos', data: datasets.metodologia_datos }
+            ];
+
+            try {
+                for (const sheet of sheets) {
+                    statusDiv.innerText = `Subiendo pestaña '${sheet.name}'...`;
+                    
+                    const response = await fetch(`https://sheetdb.io/api/v1/knv72rpe7i4ex?sheet=${sheet.name}`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ data: sheet.data })
+                    });
+                    
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        if (response.status === 402) {
+                            throw new Error("El plan gratuito de SheetDB no lo permite o has agotado tus cuotas mensuales.");
+                        } else if (response.status === 400) {
+                            throw new Error(`La pestaña '${sheet.name}' no existe en tu archivo de Google Sheets. Asegúrate de crearla primero con ese nombre exacto.`);
+                        } else {
+                            throw new Error(`Error ${response.status}: ${errText}`);
+                        }
+                    }
+                }
+
+                statusDiv.innerText = "¡Carga en la nube completada con éxito en las 9 pestañas! 🎉";
+                statusDiv.style.color = "#34d399";
+            } catch(err) {
+                statusDiv.innerText = `Error: ${err.message}`;
+                statusDiv.style.color = "#f87171";
+            }
+        };
+
+        // Firebase Database Seeder
+        const btnSeed = document.getElementById('btn-seed-firebase');
+        if (btnSeed) {
+            btnSeed.addEventListener('click', async () => {
+                btnSeed.disabled = true;
+                btnSeed.innerHTML = '<i class="animate-spin mr-2" data-feather="loader"></i> Cargando...';
+                feather.replace();
+                
+                try {
+                    const today = new Date();
+                    const subDays = (d, days) => new Date(d.getTime() - days*24*60*60*1000).toISOString();
+                    
+                    const seedClients = [
+                      { id: 'C1', name: 'Unilever Andina Colombia', totalVolume: 394220, ordersCount: 130, lastOrderDate: subDays(today, 0), tier: '💎 DIAMANTE', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO860002518-2', sectors: ['💆 CUIDADO PERSONAL', '🧹 LIMPIEZA DEL HOGAR', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados Doypack', 'Rollos Flexibles', 'Sachets'], avgOrderKg: 3000, deliveryCompliance: 98, trend: 'UP', nextAction: 'Revisión trimestral contrato', nextActionDate: subDays(today, -10), nextActionResponsible: 'Ana G.' },
+                      { id: 'C2', name: 'Quala S.A.', totalVolume: 160853, ordersCount: 81, lastOrderDate: subDays(today, 0), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860074450-9', sectors: ['🥫 ALIMENTOS Y BEBIDAS', '💆 CUIDADO PERSONAL'], topProducts: ['Rollos Bebidas', 'Sachets Sopa', 'Pouches'], avgOrderKg: 1980, deliveryCompliance: 95, trend: 'UP', nextAction: 'Llamada seguimiento nuevo producto', nextActionDate: subDays(today, -2), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C3', name: 'Nestlé de Colombia', totalVolume: 137889, ordersCount: 33, lastOrderDate: subDays(today, 5), tier: '💎 DIAMANTE', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO860002130-9', sectors: ['🥫 ALIMENTOS Y BEBIDAS', '☕ CAFÉ Y BEBIDAS CALIENTES'], topProducts: ['Empaque Galletas', 'Laminados Lácteos', 'Pouches Café'], avgOrderKg: 4178, deliveryCompliance: 97, trend: 'UP', nextAction: 'Enviar muestras', nextActionDate: subDays(today, -1), nextActionResponsible: 'Ana G.' },
+                      { id: 'C4', name: 'UL Costa Rica SCC', totalVolume: 138440, ordersCount: 48, lastOrderDate: subDays(today, 12), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇷', nit: 'CR310167507629', sectors: ['🧹 LIMPIEZA DEL HOGAR', '🧂 CONDIMENTOS Y SALSAS'], topProducts: ['Doypack', 'Sachets', 'Rollos'], avgOrderKg: 2884, deliveryCompliance: 96, trend: 'UP', nextAction: 'Confirmar recepción pedido', nextActionDate: subDays(today, -7), nextActionResponsible: 'Luis F.' },
+                      { id: 'C5', name: 'Colombina S.A.', totalVolume: 23578, ordersCount: 34, lastOrderDate: subDays(today, 2), tier: '💎 DIAMANTE', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO890301884-5', sectors: ['🧂 CONDIMENTOS Y SALSAS', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Rollos Dulces', 'Bolsas Chupetas', 'Laminados'], avgOrderKg: 693, deliveryCompliance: 92, trend: 'STABLE', nextAction: 'Renovación de precios', nextActionDate: subDays(today, -14), nextActionResponsible: 'Luis F.' },
+                      { id: 'C6', name: 'Induhuila S.A.', totalVolume: 15000, ordersCount: 6, lastOrderDate: subDays(today, 7), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO891100234-1', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas Arroz', 'Laminados'], avgOrderKg: 2500, deliveryCompliance: 96, trend: 'STABLE', nextAction: 'Cotización nuevo volumen', nextActionDate: subDays(today, -4), nextActionResponsible: 'Ana G.' },
+                      { id: 'C7', name: 'Colgate-Palmolive', totalVolume: 6880, ordersCount: 7, lastOrderDate: subDays(today, 11), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO860001024-5', sectors: ['💆 CUIDADO PERSONAL', '🧹 LIMPIEZA DEL HOGAR'], topProducts: ['Laminados Crema', 'Sachets'], avgOrderKg: 982, deliveryCompliance: 99, trend: 'UP', nextAction: 'Validar calidad lote 4', nextActionDate: subDays(today, -1), nextActionResponsible: 'Luis F.' },
+                      { id: 'C8', name: 'Reckitt Benckiser', totalVolume: 11000, ordersCount: 8, lastOrderDate: subDays(today, 14), tier: '🥇 ORO', status: 'ACTIVO EN PEDIDO', country: '🇨🇴', nit: 'CO890300684-4', sectors: ['🧹 LIMPIEZA DEL HOGAR'], topProducts: ['Rollos Especiales', 'Doypack'], avgOrderKg: 1375, deliveryCompliance: 99, trend: 'UP', nextAction: 'Validar calidad', nextActionDate: subDays(today, -1), nextActionResponsible: 'Luis F.' },
+                      { id: 'C9', name: 'Unilever Andina Ecuador', totalVolume: 31760, ordersCount: 16, lastOrderDate: subDays(today, 38), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇪🇨', nit: 'EC179002130', sectors: ['💆 CUIDADO PERSONAL'], topProducts: ['Sachets', 'Rollos'], avgOrderKg: 1985, deliveryCompliance: 94, trend: 'STABLE', nextAction: 'Llamada de rutina', nextActionDate: subDays(today, -8), nextActionResponsible: 'Ana G.' },
+                      { id: 'C10', name: 'Solla S.A.', totalVolume: 20000, ordersCount: 4, lastOrderDate: subDays(today, 18), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO890900168-3', sectors: ['🐾 MASCOTAS'], topProducts: ['Sacos 15kg', 'Bolsas'], avgOrderKg: 5000, deliveryCompliance: 100, trend: 'UP', nextAction: 'Ninguna', nextActionDate: subDays(today, -30), nextActionResponsible: 'Carlos M.' },
+                      { id: 'C11', name: 'Nestlé México', totalVolume: 6000, ordersCount: 2, lastOrderDate: subDays(today, 24), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇲🇽', nit: 'MX0101829168', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Pouches', 'Sachets'], avgOrderKg: 3000, deliveryCompliance: 95, trend: 'STABLE', nextAction: 'Consultar inventario actual', nextActionDate: subDays(today, -20), nextActionResponsible: 'Ana G.' },
+                      { id: 'C12', name: 'Riopaila Castilla S.A.', totalVolume: 41000, ordersCount: 2, lastOrderDate: subDays(today, 35), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860000213-4', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas Azúcar', 'Rollos'], avgOrderKg: 20500, deliveryCompliance: 90, trend: 'STABLE', nextAction: 'Llamada de rutina', nextActionDate: subDays(today, -8), nextActionResponsible: 'Ana G.' },
+                      { id: 'C13', name: 'Levapan S.A.', totalVolume: 9100, ordersCount: 4, lastOrderDate: subDays(today, 19), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860000261-6', sectors: ['🧂 CONDIMENTOS Y SALSAS', '🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Empaques Levadura', 'Sobres'], avgOrderKg: 2275, deliveryCompliance: 99, trend: 'STABLE', nextAction: 'Cotización nuevo volumen', nextActionDate: subDays(today, -4), nextActionResponsible: 'Ana G.' },
+                      { id: 'C14', name: 'Nutrimenti de Colombia', totalVolume: 9100, ordersCount: 4, lastOrderDate: subDays(today, 37), tier: '🥇 ORO', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO800090890-5', sectors: ['☕ CAFÉ Y BEBIDAS CALIENTES', '🧂 CONDIMENTOS Y SALSAS'], topProducts: ['Rollos', 'Pouches'], avgOrderKg: 2275, deliveryCompliance: 98, trend: 'UP', nextAction: 'Preparar contrato anual', nextActionDate: subDays(today, -15), nextActionResponsible: 'Luis F.' },
+                      { id: 'C15', name: 'Quala Dominicana', totalVolume: 3800, ordersCount: 4, lastOrderDate: subDays(today, 32), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇩🇴', nit: 'DO13029493-3', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Sachets', 'Rollos'], avgOrderKg: 950, deliveryCompliance: 89, trend: 'STABLE', nextAction: 'Llamada de rutina', nextActionDate: subDays(today, -8), nextActionResponsible: 'Ana G.' },
+                      { id: 'C16', name: 'Panamericana Alimentos', totalVolume: 4000, ordersCount: 3, lastOrderDate: subDays(today, 19), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas', 'Rollos'], avgOrderKg: 1333, deliveryCompliance: 100, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C17', name: 'Federación Cafeteros Colombia', totalVolume: 3353, ordersCount: 2, lastOrderDate: subDays(today, 24), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: '-', sectors: ['☕ CAFÉ Y BEBIDAS CALIENTES'], topProducts: ['Laminados Café'], avgOrderKg: 1676, deliveryCompliance: 100, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C18', name: 'Impresos CI S.A.S.', totalVolume: 10000, ordersCount: 2, lastOrderDate: subDays(today, 46), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: '-', sectors: ['📦 INDUSTRIAL / PACKAGING'], topProducts: ['Rollos Especiales'], avgOrderKg: 5000, deliveryCompliance: 100, trend: 'UP', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C19', name: 'Peruplast S.A.', totalVolume: 5000, ordersCount: 1, lastOrderDate: subDays(today, 31), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇵🇪', nit: '-', sectors: ['📦 INDUSTRIAL / PACKAGING'], topProducts: ['Rollos'], avgOrderKg: 5000, deliveryCompliance: 94, trend: 'STABLE', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C20', name: 'Procter and Gamble Colombia', totalVolume: 3000, ordersCount: 1, lastOrderDate: subDays(today, 27), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO800000946-4', sectors: ['🧹 LIMPIEZA DEL HOGAR', '📦 INDUSTRIAL / PACKAGING'], topProducts: ['Empaques Jabón'], avgOrderKg: 3000, deliveryCompliance: 85, trend: 'DOWN', nextAction: 'Visita de recuperación', nextActionDate: subDays(today, -3), nextActionResponsible: 'Director Comercial' },
+                      { id: 'C21', name: 'Centurion Foods S.A.S', totalVolume: 14867, ordersCount: 1, lastOrderDate: subDays(today, 100), tier: '🥈 PLATA', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados', 'Bolsas'], avgOrderKg: 14867, deliveryCompliance: 92, trend: 'DOWN', nextAction: 'Llamada urgente de reactivación', nextActionDate: subDays(today, 1), nextActionResponsible: 'Director Comercial' },
+                      { id: 'C22', name: 'Tecnoquímicas S.A.', totalVolume: 631, ordersCount: 2, lastOrderDate: subDays(today, 38), tier: '🥈 PLATA', status: 'EN SEGUIMIENTO', country: '🇨🇴', nit: 'CO860002130-1', sectors: ['💊 FARMACÉUTICA', '💆 CUIDADO PERSONAL'], topProducts: ['Laminados Alimentos', 'Sobres'], avgOrderKg: 315, deliveryCompliance: 99, trend: 'STABLE', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C23', name: 'Federal S.A.S.', totalVolume: 900, ordersCount: 1, lastOrderDate: subDays(today, 25), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Bolsas'], avgOrderKg: 900, deliveryCompliance: 90, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C24', name: 'Uniphos Colombia', totalVolume: 869, ordersCount: 1, lastOrderDate: subDays(today, 38), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['📦 INDUSTRIAL / PACKAGING'], topProducts: ['Rollos Especiales'], avgOrderKg: 869, deliveryCompliance: 100, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C25', name: 'Kern S Y CIA', totalVolume: 2467, ordersCount: 1, lastOrderDate: subDays(today, 48), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados'], avgOrderKg: 2467, deliveryCompliance: 100, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C26', name: 'Cooperativa Colanta', totalVolume: 4000, ordersCount: 1, lastOrderDate: subDays(today, 69), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['🥛 LÁCTEOS'], topProducts: ['Bolsas Leche'], avgOrderKg: 4000, deliveryCompliance: 100, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C27', name: 'C.I Upfield Colombia', totalVolume: 2200, ordersCount: 2, lastOrderDate: subDays(today, 72), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: 'CO901181764-2', sectors: ['🥫 ALIMENTOS Y BEBIDAS'], topProducts: ['Laminados', 'Tapas'], avgOrderKg: 1100, deliveryCompliance: 95, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C28', name: 'J G B S.A.', totalVolume: 1450, ordersCount: 1, lastOrderDate: subDays(today, 33), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['💊 FARMACÉUTICA', '💆 CUIDADO PERSONAL'], topProducts: ['Laminados'], avgOrderKg: 1450, deliveryCompliance: 100, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' },
+                      { id: 'C29', name: 'Tecnofar TQ S.A.S.', totalVolume: 800, ordersCount: 1, lastOrderDate: subDays(today, 40), tier: '🥉 BRONCE', status: 'INACTIVO 🔴', country: '🇨🇴', nit: '-', sectors: ['💊 FARMACÉUTICA'], topProducts: ['Laminados Médicos'], avgOrderKg: 800, deliveryCompliance: 100, trend: 'DOWN', nextAction: '-', nextActionDate: '', nextActionResponsible: '' }
+                    ];
+                    
+                    for (const c of seedClients) {
+                        await setDoc(doc(db, 'clients', c.id), c);
+                    }
+                    alert('¡Base de datos inicializada en Firebase con éxito! 🚀');
+                    document.getElementById('firebase-init-banner').classList.add('hidden');
+                } catch(e) {
+                    console.error("Error seeding Firebase:", e);
+                    alert('Error al inicializar: ' + e.message);
+                    btnSeed.disabled = false;
+                    btnSeed.innerHTML = '<i data-feather="upload-cloud"></i> Cargar 29 Clientes ☁️';
+                    feather.replace();
+                }
+            });
+        }
+
         feather.replace();
     </script>
 </body>
 </html>
+
