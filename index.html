@@ -817,6 +817,20 @@
             feather.replace();
         }
 
+        // 6. RENDER SECTORES
+        function renderSectors() {
+            const clients = window.appState.clients;
+            const sectors = [
+                { n: '💆 CUIDADO PERSONAL', c: '#10b981' },
+                { n: '🧹 LIMPIEZA DEL HOGAR', c: '#3b82f6' },
+                { n: '🥫 ALIMENTOS Y BEBIDAS', c: '#f59e0b' }
+            ];
+            
+            const sectorsGrid = document.getElementById('sectors-grid');
+            if (!sectorsGrid) return;
+            sectorsGrid.innerHTML = sectors.map(s => {
+                const sClients = clients.filter(c => c.sectors && c.sectors.includes(s.n));
+                return `
                 <div class="card-stat p-5">
                     <div class="flex justify-between items-start mb-4 pb-4 border-b border-brand-border">
                         <div><h3 class="font-bold text-white text-base flex items-center gap-2"><span style="color:${s.c};font-size:16px;">●</span> ${s.n.substring(2)}</h3><p class="text-slate-400 text-xs mt-1">${sClients.length} cuentas RFM</p></div>
